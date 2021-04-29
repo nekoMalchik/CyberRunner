@@ -26,10 +26,8 @@ namespace CyberRunner
         {
             // Устанавливаем нужный шрифт
             var fontCollection = new PrivateFontCollection();
-            fontCollection.AddFontFile(@"C:\Users\Пользователь\Documents\GitHub\CyberRunner\resourses\PostModernOne.ttf"); // файл шрифта
-            var family = fontCollection.Families[0];
-            // Создаём шрифт и используем далее
-            var font = new Font(family, 40);
+            fontCollection.AddFontFile(@"C:\Users\Пользователь\Documents\GitHub\CyberRunner\resourses\PostModernOne.ttf");
+            var font = new Font(fontCollection.Families[0], 40);
             
             myPlayer = player;
             Controls.Add(mainButtonsPanel);
@@ -42,7 +40,7 @@ namespace CyberRunner
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Окно";
 
-            //textbox
+            //Статы
             textBoxPlayer = new TextBox
             {
                 Size = new Size(4 * ButtonWidth, ClientSizeY - 2 * ButtonHeight - 20),
