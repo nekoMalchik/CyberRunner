@@ -6,9 +6,9 @@
         public int Body = 0;
         public int Volition = 0;
         public int Empathy = 0;
-        public int Intelligence = 0;
         public int Reflexes = 0;
         public int Technics = 0;
+        public int Intelligence = 0;
         public int Health = 10;
 
         public Player(int C, int B, int V, int E, int R, int T, int I, int H = 10)

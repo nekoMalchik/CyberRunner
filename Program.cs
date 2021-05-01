@@ -16,11 +16,12 @@ namespace CyberRunner
         [STAThread]
         static void Main()
         {
-            var player = new Player(10,10,10,10,10,10,10);
+            var player = new Player(1,1,1,1,1,1,1);
+            var game = new Game();
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MyForm(player));
+            Application.Run(new MyForm(player, game));
         }
     }
 }
