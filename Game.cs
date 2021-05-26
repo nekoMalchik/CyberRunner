@@ -1,22 +1,50 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
 
 namespace CyberRunner
+
 {
+    public class SkillCheck
+    {
+        public enum SkillList
+        {
+            Charisma,
+            Body,
+            Volition,
+            Empathy,
+            Reflexes,
+            Technics,
+            Intelligence,
+            Health,
+        }
+
+        public SkillList Skill;
+        
+        public int Power;
+        public SkillCheck(SkillList skill, int power)
+        {
+            Skill = skill;
+            Power = power;
+        }
+    }
+
+    public class Chapter
+    {
+        public string CurrentChapterText;
+        public Choice[] Choices;
+
+        public Chapter(string currentChapterText, Choice[] choices)
+        {
+            Choices = choices;
+            CurrentChapterText = currentChapterText;
+        }
+    }
     public class Game
     {
-        public string CurrentText = "sus";
-
-        // public Font CreationCharacterFont = CreateFont(40,@"C:\Users\Пользователь\Documents\GitHub\CyberRunner\resourses\PostModernOne.ttf");
-        // public Font MainFont = CreateFont(20, @"C:\Users\Пользователь\Documents\GitHub\CyberRunner\resourses\Consolas.ttf");
-        //
-        // private static Font CreateFont(int size, string filename)
-        // {
-        //     var fontCollection = new PrivateFontCollection();
-        //     fontCollection.AddFontFile(filename);
-        //     return new Font(fontCollection.Families.Last(), size);  
-        // }
+        public int CurrentChapterNumber;
+        public LinkedList<Chapter> GameList = new LinkedList<Chapter>();
     }
 }
