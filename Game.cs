@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Text;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace CyberRunner
 
@@ -45,6 +41,6 @@ namespace CyberRunner
     public class Game
     {
         public int CurrentChapterNumber;
-        public LinkedList<Chapter> GameList = new LinkedList<Chapter>();
+        public readonly LinkedList<Chapter> GameList = new LinkedList<Chapter>();
     }
 }

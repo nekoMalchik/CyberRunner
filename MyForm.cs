@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
-using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using static CyberRunner.Script;
 
 namespace CyberRunner
@@ -14,7 +11,7 @@ namespace CyberRunner
     {
         private Dictionary<string, Control> controlDictionary;
         private PrivateFontCollection fonts;
-        private void fontsProjects()
+        private void FontsProjects()
         {
             fonts = new PrivateFontCollection();
             fonts.AddFontFile(@"C:\Users\Пользователь\Documents\GitHub\CyberRunner\resourses\PostModernOne.ttf");
@@ -41,14 +38,14 @@ namespace CyberRunner
             Name = "choiceButtonsPanel",
             Location = new Point(20,ClientSizeY - 6 * ButtonHeight - 40),
             Size =  new Size(ClientSizeX - 20 - 3 * ButtonWidth, 4 * ButtonHeight + 40),
-            BorderStyle = BorderStyle.FixedSingle,
+            BorderStyle = BorderStyle.None,
             Visible = false,
         };
         
         public MyForm(Player player, Game game)
         {
             controlDictionary = new Dictionary<string, Control>();
-            fontsProjects();
+            FontsProjects();
             BackColor = Color.White;
             myGame = game;
             myPlayer = player;
@@ -161,14 +158,13 @@ namespace CyberRunner
             
             //Постановка Choice кнопок
             PlaceChoiceButtons(Nodes[myGame.GameList.Count - 1].Item2.Length, Nodes[myGame.GameList.Count - 1].Item2);
-            //PlaceChoiceButtons(ScriptsAndChoices[myGame.CurrentChapterNumber].Item2.Length, ScriptsAndChoices[myGame.CurrentChapterNumber].Item2);
             //Перестановка Main кнопок
             controlDictionary["mBtn3"].Visible = false;
             controlDictionary["mBtn1"].Text = "Предыдущий";
             controlDictionary["mBtn1"].Enabled = false;
             controlDictionary["mBtn2"].Enabled = false;
             controlDictionary["mBtn2"].Text = "Следующий";
-            controlDictionary["Inventory"].Text = "Инвентарь";
+            controlDictionary["Inventory"].Visible = false;
             foreach (Button button in mainButtonsPanel.Controls)
             {
                 button.Click -= ChooseCharacter;
@@ -221,17 +217,21 @@ namespace CyberRunner
         private void CreateNextChapter(int choice)
         {
             myGame.GameList.AddLast(new Chapter(Nodes[choice].Item1.Text, Nodes[choice].Item2));
+            if (choice == Nodes.Length-1)
+            {
+                choiceButtonsPanel.Controls.Clear();
+                return;
+            }
             if (Nodes[choice].Item1.Upgrade != 0)
                 myPlayer.PlayerSkills[Nodes[choice].Item1.Skill]+= Nodes[choice].Item1.Upgrade;
             if (myPlayer.PlayerSkills[CyberRunner.SkillCheck.SkillList.Health] <= 0)
             {
                 textBoxPlayer.Text =
                     "Погоня за андроидами поглотила вас. Участок посылал и других на поиски беглецов, но все они быстро погибли. Вскоре погиб и сам участок.";
-                PlaceChoiceButtons(0, new Choice[0]);
+                choiceButtonsPanel.Controls.Clear();
                 return;
             }
             textBoxPlayer.Text = myGame.GameList.Last?.Value.CurrentChapterText;
-            //PlaceChoiceButtons(Nodes[myGame.GameList.Count - 1].Item2.Length, Nodes[myGame.GameList.Count - 1].Item2);
             PlaceChoiceButtons(myGame.GameList.Last.Value.Choices.Length, myGame.GameList.Last.Value.Choices);
         }
 
