@@ -23,14 +23,12 @@ namespace CyberRunner
     public class Choice
     {
         public string Text;
-        public int Branch;
         public SkillCheck Check = new SkillCheck(0, -1);
 
         public Choice(string text, SkillCheck check, int branch = -1)
         {
             Text = text;
             Check = check;
-            Branch = branch;
         }
     }
 
@@ -42,7 +40,7 @@ namespace CyberRunner
             return Tuple.Create(new Node(upgrade, skill, text, branch), new Choice[0]);
         }
 
-        public static readonly Tuple<Node, Choice[]>[] Nodes =
+        public static readonly Tuple<Node, Choice[]>[] Scripts =
         {
             Tuple.Create(new Node(0, 0,
                     "Вы - охотник на андроидов по имени: Клод Бернар, не самый опытный, конечно, но вы преданы своему делу. " +
@@ -53,7 +51,7 @@ namespace CyberRunner
                     new Choice("Встать через \"не хочу\". ((Воля > 4) {Тело + 1}) ", new SkillCheck(Volition, 5))
                 }
             ),
-                CreateCommonLine(0, 0, "Прожал Пенфилд", 0),
+                CreateCommonLine(0, 0, "Вы жмете большую красную кнопку", 0),
                 CreateCommonLine(1, Technics, "Умные люди не полагаются на свои силы. Да и зачем, когда есть технологии? {Техника + 1}", 0),
                 CreateCommonLine(-2, Health,
                     "Вы чувствуете, что сила тока при стимуляции больше, чем обычно, но не придаете этому значения", 0),
@@ -61,7 +59,7 @@ namespace CyberRunner
                                           "{Тело + 1}", 1),
                 CreateCommonLine(0, 0, "Твои мысли не стали позитивными, твоя улыбка не во весь рот, " +
                                    "но все-таки эти мысли - настоящие, эта улыбка - настоящая", 1),
-            CreateCommonLine(0,
+            CreateCommonLine(0, 
                 0,
                 "Сегодня особенный день, андроиды новейшей модели \"Нексус-6\" убили лучшего охотника." +
                 " Сегодня переназначают человека на это задание. Надбавка к зарплате тебе бы не помешала, ведь твоя овца умерла" +
@@ -126,8 +124,7 @@ namespace CyberRunner
                     "-Все хорошо, офицер?"),
                 new[]
                 {
-                    new Choice("Не думаю, что вы вообще отсюда. (Техника > 6)",
-                        new SkillCheck(Technics, 7)),
+                    new Choice("Не думаю, что вы вообще отсюда. (Техника > 6)", new SkillCheck(Technics, 7)),
                     new Choice("Да, все нормально", new SkillCheck(0, -1)),
                 }
             ),
@@ -139,8 +136,7 @@ namespace CyberRunner
                     "Довольно занимательная теория..."),
                 new[]
                 {
-                    new Choice("Знаете, а ведь мой портфель сделан из кожи мертворожденных младенцев (Эмпатия > 6)",
-                        new SkillCheck(Empathy, 7)),
+                    new Choice("Знаете, а ведь мой портфель сделан из кожи мертворожденных младенцев (Эмпатия > 6)", new SkillCheck(Empathy, 7)),
                     new Choice("Похоже придется сообщить начальству, говорите вы, раздасадованно", new SkillCheck(0, -1)),
                     new Choice("Я верю только технологиям, они никогда меня не обманут (Техника > 5)", new SkillCheck(Technics, 6)),
                 }
@@ -167,8 +163,7 @@ namespace CyberRunner
                     "Какие-то странные порядки в русском отделении, если они думают, что так просто можно взять оружие полицейского"),
                 new[]
                 {
-                    new Choice("Время пострелять! (Рефлексы > 4)",
-                        new SkillCheck(Reflexes, 5)),
+                    new Choice("Время пострелять! (Рефлексы > 4)", new SkillCheck(Reflexes, 5)),
                     new Choice("Да, конечно, любуйтесь", new SkillCheck(0, -1)),
                 }
             ),

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using static CyberRunner.Script;
 
@@ -14,17 +16,18 @@ namespace CyberRunner
         private void FontsProjects()
         {
             fonts = new PrivateFontCollection();
-            fonts.AddFontFile(@"C:\Users\Пользователь\Documents\GitHub\CyberRunner\resourses\PostModernOne.ttf");
-            fonts.AddFontFile(@"C:\Users\Пользователь\Documents\GitHub\CyberRunner\resourses\Consolas.ttf");
+            fonts.AddFontFile(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, @"Fonts\PostModernOne.ttf"));
+            fonts.AddFontFile(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, @"Fonts\Consolas.ttf"));
         }
-        const int ClientSizeX = 1280;
+        const int ClientSizeX = 1580;
         const int ClientSizeY = 960;
         const int ButtonWidth = 165;
         const int ButtonHeight = 60;
         
         private Player myPlayer;
         private Game myGame;
-        private TextBox textBoxPlayer;
+        private TextBox textBoxMain;
+        private TextBox textBoxStats;
         private Panel mainButtonsPanel = new Panel()
         {
             Name = "mainButtonsPanel",
@@ -37,7 +40,7 @@ namespace CyberRunner
         {
             Name = "choiceButtonsPanel",
             Location = new Point(20,ClientSizeY - 6 * ButtonHeight - 40),
-            Size =  new Size(ClientSizeX - 20 - 3 * ButtonWidth, 4 * ButtonHeight + 40),
+            Size =  new Size(880, 4 * ButtonHeight + 40),
             BorderStyle = BorderStyle.None,
             Visible = false,
         };
@@ -59,8 +62,8 @@ namespace CyberRunner
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Окно";
 
-            //Статы
-            textBoxPlayer = new TextBox
+            //Главный textbox
+            textBoxMain = new TextBox
             {
                 Name = "mainTextBox",
                 BackColor = Color.White,
@@ -73,17 +76,32 @@ namespace CyberRunner
                 Font = new Font(fonts.Families[1], 40),
                 Multiline = true,
                 BorderStyle = BorderStyle.None,
-                //Enabled = false,
+                Enabled = false,
+            };
+            
+            //Статы textbox
+            textBoxStats = new TextBox()
+            {
+                Name = "statsTextBox",
+                BackColor = Color.White,
+                Size = new Size(2 * ButtonWidth, ClientSizeY - 4 * ButtonHeight - 40),
+                Location = new Point(ClientSizeX - 3 * ButtonWidth + 100, 20),
+                TextAlign = HorizontalAlignment.Right,
+                Text = "",
+                ReadOnly = true,
+                Multiline = true,
+                Font = new Font(fonts.Families[1], 25),
+                BorderStyle = BorderStyle.None,
             };
 
             #region Buttons
             
             //Создание Main кнопок
-            var inventory = CreateDefaultButton(
-                "Inventory",
+            var submit = CreateDefaultButton(
+                "Submit",
                 new Point(mainButtonsPanel.Width - ButtonWidth - 20, mainButtonsPanel.Height - ButtonHeight - 20),
                 "Подтвердить");
-            inventory.Enabled = false;
+            submit.Enabled = false;
 
             var mBtn1 = CreateDefaultButton(
                 "mBtn1",
@@ -94,7 +112,7 @@ namespace CyberRunner
                 "mBtn2",
                 new Point(mBtn1.Location.X + ButtonWidth + 20,
                     mainButtonsPanel.Height - ButtonHeight - 20),
-                "Псих");
+                "Имба");
      
             var mBtn3 = CreateDefaultButton(
                 "mBtn3",
@@ -103,17 +121,18 @@ namespace CyberRunner
                 "Качок");
             #endregion
             
-            Controls.Add(textBoxPlayer);
+            Controls.Add(textBoxMain);
+            Controls.Add(textBoxStats);
             mainButtonsPanel.Controls.Add(mBtn1);
             mainButtonsPanel.Controls.Add(mBtn2);
             mainButtonsPanel.Controls.Add(mBtn3);
-            mainButtonsPanel.Controls.Add(inventory);
+            mainButtonsPanel.Controls.Add(submit);
             foreach (Control control in mainButtonsPanel.Controls)
                 controlDictionary.Add(control.Name, control);
             foreach (Control button in mainButtonsPanel.Controls)
-               if (button != controlDictionary["Inventory"])
+               if (button != controlDictionary["Submit"])
                     button.Click += ChooseCharacter;
-            inventory.Click += CreateGame;
+            submit.Click += CreateGame;
         }
         private void ChooseCharacter(object sender, EventArgs e)
         {
@@ -124,47 +143,50 @@ namespace CyberRunner
                 case "mBtn1":
                     myPlayer = new Player(6,4,4,5,3,5,7);
                     backgroundFile =
-                        @"C:\Users\Пользователь\Documents\GitHub\CyberRunner\resourses\intellegent.png";
+                        Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName,
+                            @"Images\intellegent.png");
                     break;
                 case "mBtn2":
                     myPlayer = new Player(10,10,10,10,10,10,10);
-                    backgroundFile = 
-                        @"C:\Users\Пользователь\Documents\GitHub\CyberRunner\resourses\psycho.png";
+                    backgroundFile = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName,
+                        @"Images\psycho.png");
                     break;
                 case "mBtn3":
-                    myPlayer = new Player(1, 1, 1, 1, 1, 1, 1);
-                    backgroundFile =
-                        @"C:\Users\Пользователь\Documents\GitHub\CyberRunner\resourses\powerful.png";
+                    myPlayer = new Player(4, 8, 8, 4, 1, 1, 1);
+                    backgroundFile = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName,
+                        @"Images\powerful.png");
                     break;
             }
             BackgroundImage = new Bitmap(backgroundFile);
             myPlayer.Background = backgroundFile;
-            controlDictionary["Inventory"].Enabled = true;
-            textBoxPlayer.Text = myPlayer.ToString();
+            controlDictionary["Submit"].Enabled = true;
+            textBoxMain.Text = myPlayer.ToString();
 
         }
         private void CreateGame(object sender, EventArgs e)
         {
+            textBoxMain.Enabled = true;
+            textBoxStats.Text = textBoxMain.Text;
             myGame.CurrentChapterNumber = 0;
-            textBoxPlayer.Clear();
-            textBoxPlayer.Size = new Size(ClientSizeX - 20 - 3 * ButtonWidth, ClientSizeY - 7 * ButtonHeight - 20);
+            textBoxMain.Clear();
+            textBoxMain.Size = new Size(880, ClientSizeY - 7 * ButtonHeight - 20);
             Controls.Add(choiceButtonsPanel);
             choiceButtonsPanel.Visible = true;
             myGame.GameList.AddFirst(new Chapter(
-                Nodes[myGame.GameList.Count].Item1.Text,
-                Nodes[myGame.GameList.Count].Item2));
-            textBoxPlayer.Text = myGame.GameList.First?.Value.CurrentChapterText;
-            textBoxPlayer.Font = new Font(fonts.Families[0], 25);
-            
+                Scripts[myGame.GameList.Count].Item1.Text,
+                Scripts[myGame.GameList.Count].Item2));
+            textBoxMain.Text = myGame.GameList.First?.Value.CurrentChapterText;
+            textBoxMain.Font = new Font(fonts.Families[0], 25);
+
             //Постановка Choice кнопок
-            PlaceChoiceButtons(Nodes[myGame.GameList.Count - 1].Item2.Length, Nodes[myGame.GameList.Count - 1].Item2);
+            PlaceChoiceButtons(Scripts[myGame.GameList.Count - 1].Item2.Length, Scripts[myGame.GameList.Count - 1].Item2);
             //Перестановка Main кнопок
             controlDictionary["mBtn3"].Visible = false;
             controlDictionary["mBtn1"].Text = "Предыдущий";
-            controlDictionary["mBtn1"].Enabled = false;
-            controlDictionary["mBtn2"].Enabled = false;
+            controlDictionary["mBtn1"].Click += ShowPreviousSlide;
             controlDictionary["mBtn2"].Text = "Следующий";
-            controlDictionary["Inventory"].Visible = false;
+            controlDictionary["mBtn2"].Click += ShowNextSlide;
+            controlDictionary["Submit"].Click += FindShortestEnding;
             foreach (Button button in mainButtonsPanel.Controls)
             {
                 button.Click -= ChooseCharacter;
@@ -186,27 +208,27 @@ namespace CyberRunner
         private void SkillCheck(object sender, EventArgs e)
         {
             var button = (Button) sender;
-            var buttonNumber = button.Name != "Next" ? int.Parse(button.Name) : Nodes[myGame.CurrentChapterNumber].Item1.Branch;
+            var buttonNumber = button.Name != "Next" ? int.Parse(button.Name) : Scripts[myGame.CurrentChapterNumber].Item1.Branch;
             var skillCheck = new SkillCheck(0, -1);
             if (myGame.GameList.Last?.Value.Choices.Length != 0)
                 skillCheck = myGame.GameList.Last?.Value.Choices[buttonNumber].Check;
             if (skillCheck == null || skillCheck.Power >= myPlayer.PlayerSkills[skillCheck.Skill]) return;
-            if (Nodes[myGame.CurrentChapterNumber + 1].Item1.Branch == buttonNumber)
+            if (Scripts[myGame.CurrentChapterNumber + 1].Item1.Branch == buttonNumber)
             {
                 myGame.CurrentChapterNumber++;
                 CreateNextChapter(myGame.CurrentChapterNumber);
             }
-            else if (Nodes[myGame.CurrentChapterNumber + 1].Item1.Branch == -1)
+            else if (Scripts[myGame.CurrentChapterNumber + 1].Item1.Branch == -1)
             {
                 myGame.CurrentChapterNumber++;
                 CreateNextChapter(myGame.CurrentChapterNumber);
             }
-            else if (Nodes[myGame.CurrentChapterNumber + 1].Item1.Branch != buttonNumber)
+            else if (Scripts[myGame.CurrentChapterNumber + 1].Item1.Branch != buttonNumber)
             {
                 while (true)
                 {
                     myGame.CurrentChapterNumber++;
-                    if (Nodes[myGame.CurrentChapterNumber + 1].Item1.Branch == buttonNumber || Nodes[myGame.CurrentChapterNumber + 1].Item1.Branch == -1)
+                    if (Scripts[myGame.CurrentChapterNumber + 1].Item1.Branch == buttonNumber || Scripts[myGame.CurrentChapterNumber + 1].Item1.Branch == -1)
                         break;
                 }
                 myGame.CurrentChapterNumber++;
@@ -216,22 +238,23 @@ namespace CyberRunner
 
         private void CreateNextChapter(int choice)
         {
-            myGame.GameList.AddLast(new Chapter(Nodes[choice].Item1.Text, Nodes[choice].Item2));
-            if (choice == Nodes.Length-1)
+            myGame.GameList.AddLast(new Chapter(Scripts[choice].Item1.Text, Scripts[choice].Item2));
+            if (choice == Scripts.Length-1)
             {
                 choiceButtonsPanel.Controls.Clear();
                 return;
             }
-            if (Nodes[choice].Item1.Upgrade != 0)
-                myPlayer.PlayerSkills[Nodes[choice].Item1.Skill]+= Nodes[choice].Item1.Upgrade;
+            if (Scripts[choice].Item1.Upgrade != 0)
+                myPlayer.PlayerSkills[Scripts[choice].Item1.Skill]+= Scripts[choice].Item1.Upgrade;
             if (myPlayer.PlayerSkills[CyberRunner.SkillCheck.SkillList.Health] <= 0)
             {
-                textBoxPlayer.Text =
+                textBoxMain.Text =
                     "Погоня за андроидами поглотила вас. Участок посылал и других на поиски беглецов, но все они быстро погибли. Вскоре погиб и сам участок.";
                 choiceButtonsPanel.Controls.Clear();
                 return;
             }
-            textBoxPlayer.Text = myGame.GameList.Last?.Value.CurrentChapterText;
+            textBoxMain.Text = myGame.GameList.Last?.Value.CurrentChapterText;
+            textBoxStats.Text = myPlayer.ToString();
             PlaceChoiceButtons(myGame.GameList.Last.Value.Choices.Length, myGame.GameList.Last.Value.Choices);
         }
 
@@ -275,8 +298,60 @@ namespace CyberRunner
                 }
             }
             foreach (Button button in choiceButtonsPanel.Controls)
-                button.Click += SkillCheck;   
-
+                button.Click += SkillCheck;
         }
+
+        private void ShowPreviousSlide(object sender, EventArgs e)
+        {
+            var gameArray = myGame.GameList.ToArray();
+            if (myGame.CurrentChapterNumber == 0)
+                return;
+            myGame.CurrentChapterNumber--;
+            choiceButtonsPanel.Visible = false;
+            textBoxMain.Text = gameArray[myGame.CurrentChapterNumber].CurrentChapterText;
+        }
+
+        private void ShowNextSlide(object sender, EventArgs e)
+        {
+            var gameArray = myGame.GameList.ToArray();
+            if (myGame.CurrentChapterNumber + 1 == gameArray.Length)
+                return;
+            myGame.CurrentChapterNumber++;
+            if (myGame.CurrentChapterNumber + 1 == gameArray.Length)
+                choiceButtonsPanel.Visible = true;
+            textBoxMain.Text = gameArray[myGame.CurrentChapterNumber].CurrentChapterText;
+        }
+
+        private class LocalNode
+        {
+            public Player LPlayer;
+            public LocalNode LowNode;
+            public LocalNode HiNode;
+            public LocalNode EqNode;
+            public object Value;
+        }
+        
+        private void FindShortestEnding(object sender, EventArgs e)
+        {
+            var endingsList = new List<string>();
+            var endList = new List<int>();
+            var localGameList = new LinkedList<Chapter>();
+            var localPlayer = myPlayer;
+            //var paths = new 
+            for (var i = myGame.CurrentChapterNumber; i < Scripts.Length; i++)
+            {
+                
+            }
+        }
+
+        // private Tuple<int, SkillCheck[], bool>[] GetPaths(int startIndex, int endIndex)
+        // {
+        //     var result = new Tuple<int, SkillCheck, bool>[startIndex, endIndex];
+        //     for (var i = startIndex; i < endIndex; i++)
+        //     {
+        //         
+        //     }
+        //     return null;
+        // }
     }
 }
