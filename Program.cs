@@ -8,18 +8,18 @@ using System.Windows.Forms;
 
 namespace CyberRunner
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MyForm(new Player(1,1,1,1,1,1,1), new Game()));
+            Application.Run(new MyForm(new Player(1, 1, 1, 1, 1, 1, 1), new Game()));
         }
     }
 }

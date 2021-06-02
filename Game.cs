@@ -14,12 +14,13 @@ namespace CyberRunner
             Reflexes,
             Technics,
             Intelligence,
-            Health,
+            Health
         }
 
         public SkillList Skill;
-        
+
         public int Power;
+
         public SkillCheck(SkillList skill, int power)
         {
             Skill = skill;
@@ -38,9 +39,10 @@ namespace CyberRunner
             CurrentChapterText = currentChapterText;
         }
     }
+
     public class Game
     {
         public int CurrentChapterNumber;
-        public readonly LinkedList<Chapter> GameList = new LinkedList<Chapter>();
+        public readonly LinkedList<Chapter> GameList = new();
     }
 }

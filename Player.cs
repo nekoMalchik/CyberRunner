@@ -5,14 +5,10 @@ namespace CyberRunner
 {
     public class Player
     {
-
-        public string Background;
-
         public Dictionary<SkillList, int> PlayerSkills;
 
         public Player(int C, int B, int V, int E, int R, int T, int I, int H = 10)
         {
-
             PlayerSkills = new Dictionary<SkillList, int>
             {
                 [SkillList.Charisma] = C,
@@ -22,10 +18,10 @@ namespace CyberRunner
                 [SkillList.Reflexes] = R,
                 [SkillList.Technics] = T,
                 [SkillList.Intelligence] = I,
-                [SkillList.Health] = H,
+                [SkillList.Health] = H
             };
         }
-        
+
         public override string ToString()
         {
             return $" Харизма = {PlayerSkills[SkillList.Charisma]}\r\n Сила = {PlayerSkills[SkillList.Body]}\r\n " +
